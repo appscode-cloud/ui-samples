@@ -273,3 +273,38 @@ spec:
         securityContext:
           runAsUser: 0
           runAsGroup: 0
+---
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: PostgresAutoscaler
+metadata:
+  name: postgres
+  namespace: demo
+spec:
+  databaseRef:
+    name: sample
+  opsRequestOptions:
+    timeout: 10m
+    apply: IfReady
+  compute:
+    postgres:
+      trigger: "On"
+      podLifeTimeThreshold: 10m
+      resourceDiffPercentage: 20
+      minAllowed:
+        cpu: 400m
+        memory: 400Mi
+      maxAllowed:
+        cpu: 1
+        memory: 2Gi
+    nodeTopology:
+      name: standard-basv2-family
+---
+apiVersion: catalog.appscode.com/v1alpha1
+kind: PostgresBinding
+metadata:
+  name: postgres
+  namespace: demo
+spec:
+  sourceRef:
+    name: postgres
+    namespace: demo
