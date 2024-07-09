@@ -29,7 +29,7 @@ spec:
   ca:
     secretName: proxysql-ca
 ---
-apiVersion: kubedb.com/v1alpha2
+apiVersion: kubedb.com/v1
 kind: ProxySQL
 metadata:
   name: proxysql

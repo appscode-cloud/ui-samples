@@ -76,7 +76,7 @@ metadata:
 spec:
   selfSigned: {}
 ---
-apiVersion: kubedb.com/v1alpha2
+apiVersion: kubedb.com/v1
 kind: Elasticsearch
 metadata:
   annotations:

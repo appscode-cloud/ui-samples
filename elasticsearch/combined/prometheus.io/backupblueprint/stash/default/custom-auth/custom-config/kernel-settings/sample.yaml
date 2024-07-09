@@ -16,7 +16,7 @@ metadata:
 stringData:
   elasticsearch.yml: 'node.processors: 2'
 ---
-apiVersion: kubedb.com/v1alpha2
+apiVersion: kubedb.com/v1
 kind: Elasticsearch
 metadata:
   annotations:
