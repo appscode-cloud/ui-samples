@@ -32,7 +32,7 @@ spec:
   kubernetesLabels:
     kubedb: redis
 ---
-apiVersion: kubedb.com/v1alpha2
+apiVersion: kubedb.com/v1
 kind: Redis
 metadata:
   name: redis-cluster-dedicated

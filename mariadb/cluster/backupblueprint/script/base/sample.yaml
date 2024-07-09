@@ -40,7 +40,7 @@ metadata:
   name: mariadb-init-script
   namespace: demo
 ---
-apiVersion: kubedb.com/v1alpha2
+apiVersion: kubedb.com/v1
 kind: MariaDB
 metadata:
   annotations:

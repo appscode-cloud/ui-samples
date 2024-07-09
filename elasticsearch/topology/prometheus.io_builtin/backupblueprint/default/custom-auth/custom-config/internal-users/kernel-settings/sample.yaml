@@ -76,7 +76,7 @@ stringData:
   username: kibanaserver
 type: kubernetes.io/basic-auth
 ---
-apiVersion: kubedb.com/v1alpha2
+apiVersion: kubedb.com/v1
 kind: Elasticsearch
 metadata:
   annotations:

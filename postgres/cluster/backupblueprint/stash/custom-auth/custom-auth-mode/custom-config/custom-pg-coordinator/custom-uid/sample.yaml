@@ -19,7 +19,7 @@ stringData:
     shared_buffers=258MB
 type: Opaque
 ---
-apiVersion: kubedb.com/v1alpha2
+apiVersion: kubedb.com/v1
 kind: Postgres
 metadata:
   annotations:

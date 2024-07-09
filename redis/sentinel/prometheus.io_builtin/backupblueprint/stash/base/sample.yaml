@@ -1,4 +1,4 @@
-apiVersion: kubedb.com/v1alpha2
+apiVersion: kubedb.com/v1
 kind: Redis
 metadata:
   annotations:
@@ -36,7 +36,7 @@ spec:
   terminationPolicy: WipeOut
   version: 6.2.5
 ---
-apiVersion: kubedb.com/v1alpha2
+apiVersion: kubedb.com/v1
 kind: RedisSentinel
 metadata:
   name: sentinel

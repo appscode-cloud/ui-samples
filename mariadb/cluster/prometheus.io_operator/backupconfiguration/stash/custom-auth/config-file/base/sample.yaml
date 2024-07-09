@@ -20,7 +20,7 @@ stringData:
     read_buffer_size = 1048576
 type: Opaque
 ---
-apiVersion: kubedb.com/v1alpha2
+apiVersion: kubedb.com/v1
 kind: MariaDB
 metadata:
   name: mariadb

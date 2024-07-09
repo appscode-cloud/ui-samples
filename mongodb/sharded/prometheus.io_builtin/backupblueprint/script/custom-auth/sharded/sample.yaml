@@ -89,7 +89,7 @@ stringData:
       maxIncomingConnections: 40000
 type: Opaque
 ---
-apiVersion: kubedb.com/v1alpha2
+apiVersion: kubedb.com/v1
 kind: MongoDB
 metadata:
   annotations:

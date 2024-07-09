@@ -28,7 +28,7 @@ spec:
   ca:
     secretName: postgres-ca
 ---
-apiVersion: kubedb.com/v1alpha2
+apiVersion: kubedb.com/v1
 kind: Postgres
 metadata:
   annotations:
