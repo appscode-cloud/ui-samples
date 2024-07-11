@@ -64,7 +64,7 @@ spec:
       requests:
         storage: 1Gi
     storageClassName: standard
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   tls:
     issuerRef:
       apiGroup: cert-manager.io
@@ -87,7 +87,7 @@ spec:
         storage: 1Gi
     storageClassName: standard
   storageType: Durable
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   version: 6.2.5
 ---
 apiVersion: monitoring.coreos.com/v1

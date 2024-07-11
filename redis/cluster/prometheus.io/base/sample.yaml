@@ -27,7 +27,7 @@ spec:
         storage: 1Gi
     storageClassName: standard
   storageType: Durable
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   version: 6.0.6
 ---
 apiVersion: monitoring.coreos.com/v1

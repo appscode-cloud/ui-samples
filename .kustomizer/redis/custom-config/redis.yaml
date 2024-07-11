@@ -12,6 +12,6 @@ spec:
     resources:
       requests:
         storage: 1Gi
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   configSecret:
     name: redis-config

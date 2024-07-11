@@ -50,7 +50,7 @@ spec:
         storage: 1Gi
     storageClassName: standard
   storageType: Durable
-  terminationPolicy: Halt
+  deletionPolicy: Halt
   version: 8.0.23-v1
 ---
 apiVersion: monitoring.coreos.com/v1

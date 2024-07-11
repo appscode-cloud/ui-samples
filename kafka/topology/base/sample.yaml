@@ -39,4 +39,4 @@ spec:
           requests:
             storage: 1Gi
         storageClassName: standard
-  terminationPolicy: DoNotTerminate
+  deletionPolicy: DoNotTerminate

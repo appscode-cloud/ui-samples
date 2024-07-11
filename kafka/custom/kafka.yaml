@@ -52,7 +52,7 @@ spec:
           release: prometheus
         interval: 10s
   storageType: Ephemeral
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor

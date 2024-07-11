@@ -107,7 +107,7 @@ spec:
         storage: 1Gi
     storageClassName: standard
   storageType: Durable
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   version: 10.5.8
 ---
 apiVersion: stash.appscode.com/v1alpha1

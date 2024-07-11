@@ -94,7 +94,7 @@ spec:
       apiGroup: cert-manager.io
       kind: Issuer
       name: proxysql-ca
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor

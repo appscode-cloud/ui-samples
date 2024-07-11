@@ -17,4 +17,4 @@ spec:
     script:
       configMap:
         name: mariadb-init-script
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut

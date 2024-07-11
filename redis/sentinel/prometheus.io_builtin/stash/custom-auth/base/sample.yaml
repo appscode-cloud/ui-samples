@@ -42,7 +42,7 @@ spec:
         storage: 1Gi
     storageClassName: standard
   storageType: Durable
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   version: 6.2.5
 ---
 apiVersion: kubedb.com/v1
@@ -60,7 +60,7 @@ spec:
         storage: 1Gi
     storageClassName: standard
   storageType: Durable
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   version: 6.2.5
 ---
 apiVersion: stash.appscode.com/v1alpha1

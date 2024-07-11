@@ -53,7 +53,7 @@ spec:
       requests:
         storage: 1Gi
     storageClassName: standard
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   version: 6.0.6
 ---
 apiVersion: stash.appscode.com/v1alpha1
