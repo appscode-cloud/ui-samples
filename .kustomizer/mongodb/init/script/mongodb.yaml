@@ -15,4 +15,4 @@ spec:
     script:
       secret:
         secretName: mongodb-init-script
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut

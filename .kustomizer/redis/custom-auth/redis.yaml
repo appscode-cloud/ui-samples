@@ -13,6 +13,6 @@ spec:
     resources:
       requests:
         storage: 1Gi
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   authSecret:
     name: redis-auth

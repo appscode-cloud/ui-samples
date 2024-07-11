@@ -51,7 +51,7 @@ spec:
         storage: 1Gi
     storageClassName: standard
   storageType: Durable
-  terminationPolicy: Halt
+  deletionPolicy: Halt
   topology:
     group:
       name: dc002fc3-c412-4d18-b1d4-66c1fbfbbc9b

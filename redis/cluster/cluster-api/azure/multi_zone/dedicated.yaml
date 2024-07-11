@@ -75,5 +75,5 @@ spec:
           operator: "Equal"
           value: "true"
           effect: "NoSchedule"
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
 

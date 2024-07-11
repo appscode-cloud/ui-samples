@@ -69,7 +69,7 @@ spec:
     spec:
       resources: {}
   replicas: 1
-  terminationPolicy: Delete
+  deletionPolicy: Delete
   tls:
     issuerRef:
       apiGroup: "cert-manager.io"

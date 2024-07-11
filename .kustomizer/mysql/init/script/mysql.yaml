@@ -17,4 +17,4 @@ spec:
     script:
       configMap:
         name: mysql-init-script
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut

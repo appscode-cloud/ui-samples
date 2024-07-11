@@ -28,4 +28,4 @@ spec:
           limits:
             cpu: 100m
             memory: 128Mi
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut

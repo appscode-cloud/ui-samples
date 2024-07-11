@@ -126,7 +126,7 @@ spec:
         storageClassName: standard
   sslMode: requireSSL
   storageType: Durable
-  terminationPolicy: WipeOut
+  deletionPolicy: WipeOut
   tls:
     issuerRef:
       apiGroup: cert-manager.io
