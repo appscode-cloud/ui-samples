@@ -97,3 +97,38 @@ spec:
     matchLabels:
       app.kubernetes.io/instance: proxysql
       app.kubernetes.io/name: proxysqls.kubedb.com
+---
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: ProxySQLAutoscaler
+metadata:
+  name: proxysql
+  namespace: demo
+spec:
+  databaseRef:
+    name: repl
+  opsRequestOptions:
+    timeout: 10m
+    apply: IfReady
+  compute:
+    proxysql:
+      trigger: "On"
+      podLifeTimeThreshold: 10m
+      resourceDiffPercentage: 20
+      minAllowed:
+        cpu: 400m
+        memory: 400Mi
+      maxAllowed:
+        cpu: 1
+        memory: 2Gi
+    nodeTopology:
+      name: standard-basv2-family
+---
+apiVersion: catalog.appscode.com/v1alpha1
+kind: ProxySQLBinding
+metadata:
+  name: proxysql
+  namespace: demo
+spec:
+  sourceRef:
+    name: proxysql
+    namespace: demo

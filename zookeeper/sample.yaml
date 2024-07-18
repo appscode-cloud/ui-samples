@@ -47,3 +47,38 @@ spec:
       spec:
         type: LoadBalancer
   deletionPolicy: Halt
+---
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: ZooKeeperAutoscaler
+metadata:
+  name: zookeeper
+  namespace: demo
+spec:
+  databaseRef:
+    name: repl
+  opsRequestOptions:
+    timeout: 10m
+    apply: IfReady
+  compute:
+    zookeeper:
+      trigger: "On"
+      podLifeTimeThreshold: 10m
+      resourceDiffPercentage: 20
+      minAllowed:
+        cpu: 400m
+        memory: 400Mi
+      maxAllowed:
+        cpu: 1
+        memory: 2Gi
+    nodeTopology:
+      name: standard-basv2-family
+---
+apiVersion: catalog.appscode.com/v1alpha1
+kind: ZooKeeperBinding
+metadata:
+  name: zookeeper
+  namespace: demo
+spec:
+  sourceRef:
+    name: zookeeper
+    namespace: demo

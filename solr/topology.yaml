@@ -1,3 +1,57 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: solr-auth
+  namespace: demo
+stringData:
+  password: thisIs1StrongPassword
+  username: root
+type: Opaque
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: solr-config
+  namespace: demo
+stringData:
+  solr.cnf: |
+    [mysqld]
+    max_connections = 200
+    read_buffer_size = 1048576
+type: Opaque
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: solr-ca
+  namespace: demo
+spec:
+  ca:
+    secretName: solr-ca
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/instance: solr
+    app.kubernetes.io/name: solrs.kubedb.com
+    release: prometheus-stack
+  name: solr
+  namespace: demo
+spec:
+  endpoints:
+    - honorLabels: true
+      interval: 30s
+      path: /metrics
+      port: metrics
+  namespaceSelector:
+    matchNames:
+      - demo
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: solr
+      app.kubernetes.io/name: solrs.kubedb.com
+---
 apiVersion: kubedb.com/v1alpha2
 kind: Solr
 metadata:
@@ -126,3 +180,38 @@ spec:
     - alias: primary
       spec:
         type: LoadBalancer
+---
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: SolrAutoscaler
+metadata:
+  name: solr
+  namespace: demo
+spec:
+  databaseRef:
+    name: repl
+  opsRequestOptions:
+    timeout: 10m
+    apply: IfReady
+  compute:
+    node:
+      trigger: "On"
+      podLifeTimeThreshold: 10m
+      resourceDiffPercentage: 20
+      minAllowed:
+        cpu: 400m
+        memory: 400Mi
+      maxAllowed:
+        cpu: 1
+        memory: 2Gi
+    nodeTopology:
+      name: standard-basv2-family
+---
+apiVersion: catalog.appscode.com/v1alpha1
+kind: SolrBinding
+metadata:
+  name: solr
+  namespace: demo
+spec:
+  sourceRef:
+    name: solr
+    namespace: demo
