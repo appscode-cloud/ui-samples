@@ -289,6 +289,48 @@ spec:
               runAsGroup: 0
 ---
 apiVersion: core.kubestash.com/v1alpha1
+kind: BackupBlueprint
+metadata:
+  name: mongodb
+  namespace: demo
+spec:
+  usagePolicy:
+    allowedNamespaces:
+      from: Same
+  backupConfigurationTemplate:
+    backends:
+      - name: mongodb-backend
+        storageRef:
+          name: mongodb-storage
+          namespace: demo
+        retentionPolicy:
+          name: mongodb-retention-policy
+          namespace: demo
+    sessions:
+      - name: mongodb-frequent-backup
+        sessionHistoryLimit: 2
+        scheduler:
+          schedule: "*/5 * * * *"
+          jobTemplate:
+            backoffLimit: 1
+        repositories:
+          - name: mongodb-repo
+            backend: mongodb-backend
+            directory: /mongo-repo
+            encryptionSecret:
+              name: mongodb-encryption-secret
+              namespace: demo
+        addon:
+          name: mongodb-addon
+          tasks:
+            - name: logical-backup
+          jobTemplate:
+            spec:
+              securityContext:
+                runAsUser: 0
+                runAsGroup: 0
+---
+apiVersion: core.kubestash.com/v1alpha1
 kind: RestoreSession
 metadata:
   name: mongodb

@@ -434,6 +434,48 @@ spec:
               runAsGroup: 0
 ---
 apiVersion: core.kubestash.com/v1alpha1
+kind: BackupBlueprint
+metadata:
+  name: elasticsearch
+  namespace: demo
+spec:
+  usagePolicy:
+    allowedNamespaces:
+      from: Same
+  backupConfigurationTemplate:
+    backends:
+      - name: elasticsearch-backend
+        storageRef:
+          name: elasticsearch-storage
+          namespace: demo
+        retentionPolicy:
+          name: elasticsearch-retention-policy
+          namespace: demo
+    sessions:
+      - name: elasticsearch-frequent-backup
+        sessionHistoryLimit: 2
+        scheduler:
+          schedule: "*/5 * * * *"
+          jobTemplate:
+            backoffLimit: 1
+        repositories:
+          - name: elasticsearch-repo
+            backend: elasticsearch-backend
+            directory: /es-repo
+            encryptionSecret:
+              name: elasticsearch-encryption-secret
+              namespace: demo
+        addon:
+          name: elasticsearch-addon
+          tasks:
+            - name: logical-backup
+          jobTemplate:
+            spec:
+              securityContext:
+                runAsUser: 0
+                runAsGroup: 0
+---
+apiVersion: core.kubestash.com/v1alpha1
 kind: RestoreSession
 metadata:
   name: elasticsearch

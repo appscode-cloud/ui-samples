@@ -257,6 +257,48 @@ spec:
               runAsGroup: 0
 ---
 apiVersion: core.kubestash.com/v1alpha1
+kind: BackupBlueprint
+metadata:
+  name: mariadb
+  namespace: demo
+spec:
+  usagePolicy:
+    allowedNamespaces:
+      from: Same
+  backupConfigurationTemplate:
+    backends:
+      - name: mariadb-backend
+        storageRef:
+          name: mariadb-storage
+          namespace: demo
+        retentionPolicy:
+          name: mariadb-retention-policy
+          namespace: demo
+    sessions:
+      - name: mariadb-frequent-backup
+        sessionHistoryLimit: 2
+        scheduler:
+          schedule: "*/5 * * * *"
+          jobTemplate:
+            backoffLimit: 1
+        repositories:
+          - name: mariadb-repo
+            backend: mariadb-backend
+            directory: /mariadb-repo
+            encryptionSecret:
+              name: mariadb-encryption-secret
+              namespace: demo
+        addon:
+          name: mariadb-addon
+          tasks:
+            - name: logical-backup
+          jobTemplate:
+            spec:
+              securityContext:
+                runAsUser: 0
+                runAsGroup: 0
+---
+apiVersion: core.kubestash.com/v1alpha1
 kind: RestoreSession
 metadata:
   name: mariadb
