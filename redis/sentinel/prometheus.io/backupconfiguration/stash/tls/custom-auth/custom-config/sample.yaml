@@ -256,6 +256,48 @@ spec:
               runAsGroup: 0
 ---
 apiVersion: core.kubestash.com/v1alpha1
+kind: BackupBlueprint
+metadata:
+  name: redis
+  namespace: demo
+spec:
+  usagePolicy:
+    allowedNamespaces:
+      from: Same
+  backupConfigurationTemplate:
+    backends:
+      - name: redis-backend
+        storageRef:
+          name: redis-storage
+          namespace: demo
+        retentionPolicy:
+          name: redis-retention-policy
+          namespace: demo
+    sessions:
+      - name: redis-frequent-backup
+        sessionHistoryLimit: 2
+        scheduler:
+          schedule: "*/5 * * * *"
+          jobTemplate:
+            backoffLimit: 1
+        repositories:
+          - name: redis-repo
+            backend: redis-backend
+            directory: /redis-repo
+            encryptionSecret:
+              name: redis-encryption-secret
+              namespace: demo
+        addon:
+          name: redis-addon
+          tasks:
+            - name: logical-backup
+          jobTemplate:
+            spec:
+              securityContext:
+                runAsUser: 0
+                runAsGroup: 0
+---
+apiVersion: core.kubestash.com/v1alpha1
 kind: RestoreSession
 metadata:
   name: redis

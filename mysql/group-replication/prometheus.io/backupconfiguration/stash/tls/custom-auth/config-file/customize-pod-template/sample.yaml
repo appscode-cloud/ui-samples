@@ -261,6 +261,48 @@ spec:
               runAsGroup: 0
 ---
 apiVersion: core.kubestash.com/v1alpha1
+kind: BackupBlueprint
+metadata:
+  name: mysql
+  namespace: demo
+spec:
+  usagePolicy:
+    allowedNamespaces:
+      from: Same
+  backupConfigurationTemplate:
+    backends:
+      - name: mysql-backend
+        storageRef:
+          name: mysql-storage
+          namespace: demo
+        retentionPolicy:
+          name: mysql-retention-policy
+          namespace: demo
+    sessions:
+      - name: mysql-frequent-backup
+        sessionHistoryLimit: 2
+        scheduler:
+          schedule: "*/5 * * * *"
+          jobTemplate:
+            backoffLimit: 1
+        repositories:
+          - name: mysql-repo
+            backend: mysql-backend
+            directory: /mysql-repo
+            encryptionSecret:
+              name: mysql-encryption-secret
+              namespace: demo
+        addon:
+          name: mysql-addon
+          tasks:
+            - name: logical-backup
+          jobTemplate:
+            spec:
+              securityContext:
+                runAsUser: 0
+                runAsGroup: 0
+---
+apiVersion: core.kubestash.com/v1alpha1
 kind: RestoreSession
 metadata:
   name: mysql
