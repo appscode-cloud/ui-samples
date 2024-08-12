@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: singlestore-auth
+  name: memcached-auth
   namespace: demo
 stringData:
   password: thisIs1StrongPassword
@@ -11,10 +11,10 @@ type: Opaque
 apiVersion: v1
 kind: Secret
 metadata:
-  name: singlestore-config
+  name: memcached-config
   namespace: demo
 stringData:
-  singlestore.cnf: |
+  memcached.cnf: |
     [mysqld]
     max_connections = 200
     read_buffer_size = 1048576
@@ -23,20 +23,20 @@ type: Opaque
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  name: singlestore-ca
+  name: memcached-ca
   namespace: demo
 spec:
   ca:
-    secretName: singlestore-ca
+    secretName: memcached-ca
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    app.kubernetes.io/instance: singlestore
-    app.kubernetes.io/name: singlestores.kubedb.com
+    app.kubernetes.io/instance: memcached
+    app.kubernetes.io/name: memcacheds.kubedb.com
     release: prometheus-stack
-  name: singlestore
+  name: memcached
   namespace: demo
 spec:
   endpoints:
@@ -49,13 +49,13 @@ spec:
     - demo
   selector:
     matchLabels:
-      app.kubernetes.io/instance: singlestore
-      app.kubernetes.io/name: singlestores.kubedb.com
+      app.kubernetes.io/instance: memcached
+      app.kubernetes.io/name: memcacheds.kubedb.com
 ---
-apiVersion: kubedb.com/v1alpha2
-kind: Singlestore
+apiVersion: kubedb.com/v1
+kind: Memcached
 metadata:
-  name: singlestore
+  name: memcached
   namespace: sdb
 spec:
   version: "8.1.32"
@@ -88,7 +88,7 @@ spec:
               operator: Equal
               value: n2-standard-2
           containers:
-            - name: singlestore
+            - name: memcached
               resources:
                 requests:
                   "cpu": 600m
@@ -105,7 +105,7 @@ spec:
       podTemplate:
         spec:
           containers:
-            - name: singlestore
+            - name: memcached
               resources:
                 requests:
                   "cpu": 700m
@@ -125,9 +125,9 @@ spec:
         type: LoadBalancer
 ---
 apiVersion: autoscaling.kubedb.com/v1alpha1
-kind: SinglestoreAutoscaler
+kind: MemcachedAutoscaler
 metadata:
-  name: singlestore
+  name: memcached
   namespace: demo
 spec:
   databaseRef:
@@ -150,11 +150,11 @@ spec:
       name: standard-basv2-family
 ---
 apiVersion: catalog.appscode.com/v1alpha1
-kind: SinglestoreBinding
+kind: MemcachedBinding
 metadata:
-  name: singlestore
+  name: memcached
   namespace: demo
 spec:
   sourceRef:
-    name: singlestore
+    name: memcached
     namespace: demo

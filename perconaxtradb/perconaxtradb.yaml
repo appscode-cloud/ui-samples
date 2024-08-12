@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: singlestore-auth
+  name: perconaxtradb-auth
   namespace: demo
 stringData:
   password: thisIs1StrongPassword
@@ -11,10 +11,10 @@ type: Opaque
 apiVersion: v1
 kind: Secret
 metadata:
-  name: singlestore-config
+  name: perconaxtradb-config
   namespace: demo
 stringData:
-  singlestore.cnf: |
+  perconaxtradb.cnf: |
     [mysqld]
     max_connections = 200
     read_buffer_size = 1048576
@@ -23,20 +23,20 @@ type: Opaque
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  name: singlestore-ca
+  name: perconaxtradb-ca
   namespace: demo
 spec:
   ca:
-    secretName: singlestore-ca
+    secretName: perconaxtradb-ca
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    app.kubernetes.io/instance: singlestore
-    app.kubernetes.io/name: singlestores.kubedb.com
+    app.kubernetes.io/instance: perconaxtradb
+    app.kubernetes.io/name: perconaxtradbs.kubedb.com
     release: prometheus-stack
-  name: singlestore
+  name: perconaxtradb
   namespace: demo
 spec:
   endpoints:
@@ -49,13 +49,13 @@ spec:
     - demo
   selector:
     matchLabels:
-      app.kubernetes.io/instance: singlestore
-      app.kubernetes.io/name: singlestores.kubedb.com
+      app.kubernetes.io/instance: perconaxtradb
+      app.kubernetes.io/name: perconaxtradbs.kubedb.com
 ---
-apiVersion: kubedb.com/v1alpha2
-kind: Singlestore
+apiVersion: kubedb.com/v1
+kind: PerconaXtraDB
 metadata:
-  name: singlestore
+  name: perconaxtradb
   namespace: sdb
 spec:
   version: "8.1.32"
@@ -88,7 +88,7 @@ spec:
               operator: Equal
               value: n2-standard-2
           containers:
-            - name: singlestore
+            - name: perconaxtradb
               resources:
                 requests:
                   "cpu": 600m
@@ -105,7 +105,7 @@ spec:
       podTemplate:
         spec:
           containers:
-            - name: singlestore
+            - name: perconaxtradb
               resources:
                 requests:
                   "cpu": 700m
@@ -125,9 +125,9 @@ spec:
         type: LoadBalancer
 ---
 apiVersion: autoscaling.kubedb.com/v1alpha1
-kind: SinglestoreAutoscaler
+kind: PerconaXtraDBAutoscaler
 metadata:
-  name: singlestore
+  name: perconaxtradb
   namespace: demo
 spec:
   databaseRef:
@@ -150,11 +150,11 @@ spec:
       name: standard-basv2-family
 ---
 apiVersion: catalog.appscode.com/v1alpha1
-kind: SinglestoreBinding
+kind: PerconaXtraDBBinding
 metadata:
-  name: singlestore
+  name: perconaxtradb
   namespace: demo
 spec:
   sourceRef:
-    name: singlestore
+    name: perconaxtradb
     namespace: demo

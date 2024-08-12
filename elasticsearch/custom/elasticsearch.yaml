@@ -459,3 +459,38 @@ spec:
         securityContext:
           runAsUser: 0
           runAsGroup: 0
+---
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: ElasticsearchAutoscaler
+metadata:
+  name: elasticsearch
+  namespace: demo
+spec:
+  databaseRef:
+    name: repl
+  opsRequestOptions:
+    timeout: 10m
+    apply: IfReady
+  compute:
+    node:
+      trigger: "On"
+      podLifeTimeThreshold: 10m
+      resourceDiffPercentage: 20
+      minAllowed:
+        cpu: 400m
+        memory: 400Mi
+      maxAllowed:
+        cpu: 1
+        memory: 2Gi
+    nodeTopology:
+      name: standard-basv2-family
+---
+apiVersion: catalog.appscode.com/v1alpha1
+kind: ElasticsearchBinding
+metadata:
+  name: elasticsearch
+  namespace: demo
+spec:
+  sourceRef:
+    name: elasticsearch
+    namespace: demo

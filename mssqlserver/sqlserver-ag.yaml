@@ -1,3 +1,25 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sqlserver-ag-auth
+  namespace: demo
+stringData:
+  password: thisIs1StrongPassword
+  username: root
+type: Opaque
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sqlserver-ag-config
+  namespace: demo
+stringData:
+  mssqlserver.cnf: |
+    [mysqld]
+    max_connections = 200
+    read_buffer_size = 1048576
+type: Opaque
+---
 apiVersion: kubedb.com/v1alpha2
 kind: MSSQLServer
 metadata:
@@ -31,8 +53,66 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
- name: sqlserver-ag-ca
- namespace: sample
+  name: sqlserver-ag-ca
+  namespace: sample
 spec:
- ca:
-   secretName: mssqlserver-ca
+  ca:
+    secretName: mssqlserver-ca
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/instance: mssqlserver
+    app.kubernetes.io/name: mssqlservers.kubedb.com
+    release: prometheus-stack
+  name: sqlserver-ag
+  namespace: demo
+spec:
+  endpoints:
+    - honorLabels: true
+      interval: 30s
+      path: /metrics
+      port: metrics
+  namespaceSelector:
+    matchNames:
+      - demo
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: mssqlserver
+      app.kubernetes.io/name: mssqlservers.kubedb.com
+---
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: MSSQLServerAutoscaler
+metadata:
+  name: sqlserver-ag
+  namespace: demo
+spec:
+  databaseRef:
+    name: repl
+  opsRequestOptions:
+    timeout: 10m
+    apply: IfReady
+  compute:
+    mssqlserver:
+      trigger: "On"
+      podLifeTimeThreshold: 10m
+      resourceDiffPercentage: 20
+      minAllowed:
+        cpu: 400m
+        memory: 400Mi
+      maxAllowed:
+        cpu: 1
+        memory: 2Gi
+    nodeTopology:
+      name: standard-basv2-family
+---
+apiVersion: catalog.appscode.com/v1alpha1
+kind: MSSQLServerBinding
+metadata:
+  name: sqlserver-ag
+  namespace: demo
+spec:
+  sourceRef:
+    name: sqlserver-ag
+    namespace: demo
