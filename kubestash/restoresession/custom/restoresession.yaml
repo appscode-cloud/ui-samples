@@ -1,0 +1,25 @@
+apiVersion: core.kubestash.com/v1alpha1
+kind: RestoreSession
+metadata:
+  name: restore-app
+  namespace: demo
+spec:
+  target:
+    apiGroup: kubedb.com
+    kind: MongoDB
+    namespace: demo
+    name: app
+  dataSource:
+    snapshot: full-repo-mg-backup-full-mongo-1723451040
+    repository: full-repo
+    encryptionSecret:
+      name: encrypt-secret
+      namespace: demo
+  addon:
+    name: mongodb-addon
+    tasks:
+      - name: logical-backup-restore
+    jobTemplate:
+      spec:
+        securityContext:
+          runAsUser: 1001880000
