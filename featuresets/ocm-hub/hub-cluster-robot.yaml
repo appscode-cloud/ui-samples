@@ -1,0 +1,28 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: hub-cluster-robot
+  namespace: kubeops
+spec:
+  interval: 5m
+  timeout: 30m
+  releaseName: hub-cluster-robot
+  targetNamespace: open-cluster-management
+  storageNamespace: open-cluster-management
+  chart:
+    spec:
+      chart: hub-cluster-robot
+      version: "v2024.2.25"
+      sourceRef:
+        kind: HelmRepository
+        name: appscode-charts-oci
+        namespace: kubeops
+  install:
+    createNamespace: true
+    crds: CreateReplace
+    remediation:
+      retries: -1
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      retries: -1
