@@ -153,7 +153,7 @@ spec:
       repositories:
         - name: singlestore-repo
           backend: singlestore-backend
-          directory: /mongo-repo
+          directory: /singlestore-repo
           encryptionSecret:
             name: singlestore-encryption-secret
             namespace: demo
@@ -195,7 +195,7 @@ spec:
         repositories:
           - name: singlestore-repo
             backend: singlestore-backend
-            directory: /mongo-repo
+            directory: /singlestore-repo
             encryptionSecret:
               name: singlestore-encryption-secret
               namespace: demo
