@@ -1,7 +1,7 @@
 apiVersion: storage.kubestash.com/v1alpha1
 kind: BackupStorage
 metadata:
-  name: s3-storage
+  name: s3
   namespace: demo
 spec:
   storage:
@@ -11,7 +11,7 @@ spec:
       bucket: kubestash-demo
       region: us-west-1
       prefix: /kubestash-backup
-      secret: s3-secret
+      secretName: s3-storage-cred
   usagePolicy:
     allowedNamespaces:
       from: All
