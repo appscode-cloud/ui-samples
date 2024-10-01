@@ -101,3 +101,13 @@ spec:
         memory: 2Gi
     nodeTopology:
       name: standard-basv2-family
+---
+apiVersion: catalog.appscode.com/v1alpha1
+kind: KafkaBinding
+metadata:
+  name: kafka
+  namespace: demo
+spec:
+  sourceRef:
+    name: kafka
+    namespace: demo
