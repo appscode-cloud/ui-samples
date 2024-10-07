@@ -12,7 +12,7 @@ spec:
   chart:
     spec:
       chart: cluster-profile-manager
-      version: "v2024.2.13"
+      version: "v2024.9.30"
       sourceRef:
         kind: HelmRepository
         name: appscode-charts-oci
