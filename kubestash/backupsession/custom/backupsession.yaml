@@ -1,0 +1,11 @@
+apiVersion: core.kubestash.com/v1alpha1
+kind: BackupSession
+metadata:
+  name: backup-app
+  namespace: demo
+spec:
+  invoker:
+    apiGroup: core.kubestash.com
+    kind: BackupConfiguration
+    name: ace-db
+  session: full-backup

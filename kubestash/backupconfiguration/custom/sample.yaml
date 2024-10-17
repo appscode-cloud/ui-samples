@@ -1,0 +1,88 @@
+apiVersion: core.kubestash.com/v1alpha1
+kind: BackupConfiguration
+metadata:
+  labels:
+    app.kubernetes.io/instance: backup-app
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mysqls.kubedb.com
+  name: backup-app
+  namespace: demo
+spec:
+  backends:
+    - name: default-backend
+      retentionPolicy:
+        name: keep-1wk
+        namespace: stash
+      storageRef:
+        name: default
+        namespace: stash
+  sessions:
+    - addon:
+        name: mysql-addon
+        tasks:
+          - name: logical-backup
+      name: full-backup
+      repositories:
+        - backend: default-backend
+          directory: demo/backup-app
+          encryptionSecret:
+            name: default-encryption-secret
+            namespace: stash
+          name: backup-app
+      scheduler:
+        jobTemplate:
+          backoffLimit: 1
+          template:
+            controller: {}
+            metadata: {}
+            spec:
+              resources: {}
+        schedule: '*/30 * * * *'
+      sessionHistoryLimit: 2
+  target:
+    apiGroup: kubedb.com
+    kind: MySQL
+    name: backup-app
+    namespace: demo
+status:
+  backends:
+    - name: default-backend
+      ready: true
+      retentionPolicy:
+        found: true
+        ref:
+          name: keep-1wk
+          namespace: stash
+      storage:
+        phase: Ready
+        ref:
+          name: default
+          namespace: stash
+  conditions:
+    - lastTransitionTime: "2024-09-19T06:38:44Z"
+      message: Validation has been passed successfully.
+      reason: ResourceValidationPassed
+      status: "True"
+      type: ValidationPassed
+  dependencies:
+    - found: true
+      kind: Addon
+      name: mysql-addon
+  phase: Ready
+  repositories:
+    - name: backup-app
+      phase: Ready
+  sessions:
+    - conditions:
+        - lastTransitionTime: "2024-09-19T06:38:44Z"
+          message: Scheduler has been ensured successfully.
+          reason: SchedulerEnsured
+          status: "True"
+          type: SchedulerEnsured
+        - lastTransitionTime: "2024-09-19T06:38:45Z"
+          message: Initial backup has been triggered successfully.
+          reason: SuccessfullyTriggeredInitialBackup
+          status: "True"
+          type: InitialBackupTriggered
+      name: full-backup
+  targetFound: true
