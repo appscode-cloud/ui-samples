@@ -14,7 +14,7 @@ spec:
   chart:
     spec:
       chart: service-gateway-presets
-      version: "v2024.2.11"
+      version: "v2024.10.24"
       sourceRef:
         kind: HelmRepository
         name: appscode-charts-oci
