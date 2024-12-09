@@ -61,8 +61,8 @@ spec:
     spec:
       containerSecurityContext:
         privileged: false
-        runAsGroup: 1000620000
-        runAsUser: 1000620000
+        runAsGroup: 0
+        runAsUser: 999
   sslMode: verify-full
   standbyMode: Hot
   storage:
@@ -244,7 +244,7 @@ spec:
         jobTemplate:
           spec:
             securityContext:
-              runAsUser: 0
+              runAsUser: 999
               runAsGroup: 0
 ---
 apiVersion: core.kubestash.com/v1alpha1
@@ -286,7 +286,7 @@ spec:
           jobTemplate:
             spec:
               securityContext:
-                runAsUser: 0
+                runAsUser: 999
                 runAsGroup: 0
 ---
 apiVersion: core.kubestash.com/v1alpha1
@@ -313,7 +313,7 @@ spec:
     jobTemplate:
       spec:
         securityContext:
-          runAsUser: 0
+          runAsUser: 999
           runAsGroup: 0
 ---
 apiVersion: autoscaling.kubedb.com/v1alpha1
