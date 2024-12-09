@@ -122,7 +122,7 @@ spec:
         jobTemplate:
           spec:
             securityContext:
-              runAsUser: 0
+              runAsUser: 10001
               runAsGroup: 0
 ---
 apiVersion: core.kubestash.com/v1alpha1
@@ -164,7 +164,7 @@ spec:
           jobTemplate:
             spec:
               securityContext:
-                runAsUser: 0
+                runAsUser: 10001
                 runAsGroup: 0
 ---
 apiVersion: core.kubestash.com/v1alpha1
@@ -191,7 +191,7 @@ spec:
     jobTemplate:
       spec:
         securityContext:
-          runAsUser: 0
+          runAsUser: 10001
           runAsGroup: 0
 ---
 apiVersion: autoscaling.kubedb.com/v1alpha1
