@@ -411,11 +411,27 @@ spec:
         namespace: demo
   sessions:
     - name: elasticsearch-frequent-backup
-      sessionHistoryLimit: 2
       scheduler:
-        schedule: "*/5 * * * *"
+        failedJobsHistoryLimit: 4
         jobTemplate:
-          backoffLimit: 1
+          backoffLimit: 2
+          template:
+            spec:
+              containerSecurityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                  - ALL
+                runAsGroup: 0
+                runAsNonRoot: true
+                runAsUser: 1000
+                seccompProfile:
+                  type: RuntimeDefault
+              nodeSelector:
+                kubernetes.io/os: linux
+        schedule: 0 */2 * * *
+        successfulJobsHistoryLimit: 2
+      sessionHistoryLimit: 3
       repositories:
         - name: elasticsearch-repo
           backend: elasticsearch-backend
@@ -429,9 +445,18 @@ spec:
           - name: logical-backup
         jobTemplate:
           spec:
-            securityContext:
-              runAsUser: 0
+            containerSecurityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
               runAsGroup: 0
+              runAsNonRoot: true
+              runAsUser: 1000
+              seccompProfile:
+                type: RuntimeDefault
+            nodeSelector:
+              kubernetes.io/os: linux
 ---
 apiVersion: core.kubestash.com/v1alpha1
 kind: BackupBlueprint
@@ -453,11 +478,27 @@ spec:
           namespace: demo
     sessions:
       - name: elasticsearch-frequent-backup
-        sessionHistoryLimit: 2
         scheduler:
-          schedule: "*/5 * * * *"
+          failedJobsHistoryLimit: 4
           jobTemplate:
-            backoffLimit: 1
+            backoffLimit: 2
+            template:
+              spec:
+                containerSecurityContext:
+                  allowPrivilegeEscalation: false
+                  capabilities:
+                    drop:
+                    - ALL
+                  runAsGroup: 0
+                  runAsNonRoot: true
+                  runAsUser: 1000
+                  seccompProfile:
+                    type: RuntimeDefault
+                nodeSelector:
+                  kubernetes.io/os: linux
+          schedule: 0 */2 * * *
+          successfulJobsHistoryLimit: 2
+        sessionHistoryLimit: 3
         repositories:
           - name: elasticsearch-repo
             backend: elasticsearch-backend
@@ -471,9 +512,18 @@ spec:
             - name: logical-backup
           jobTemplate:
             spec:
-              securityContext:
-                runAsUser: 0
+              containerSecurityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                  - ALL
                 runAsGroup: 0
+                runAsNonRoot: true
+                runAsUser: 1000
+                seccompProfile:
+                  type: RuntimeDefault
+              nodeSelector:
+                kubernetes.io/os: linux
 ---
 apiVersion: core.kubestash.com/v1alpha1
 kind: RestoreSession
@@ -498,9 +548,22 @@ spec:
       - name: logical-backup-restore
     jobTemplate:
       spec:
+        nodeSelector:
+          kubernetes.io/os: linux
         securityContext:
-          runAsUser: 0
+          runAsUser: 1000
           runAsGroup: 0
+    containerRuntimeSettings:
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        runAsGroup: 0
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
 ---
 apiVersion: autoscaling.kubedb.com/v1alpha1
 kind: ElasticsearchAutoscaler
