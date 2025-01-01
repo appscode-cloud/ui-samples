@@ -48,6 +48,181 @@ spec:
         type: LoadBalancer
   deletionPolicy: Halt
 ---
+apiVersion: core.kubestash.com/v1alpha1
+kind: BackupConfiguration
+metadata:
+  name: zookeeper
+  namespace: demo
+spec:
+  target:
+    apiGroup: kubedb.com
+    kind: ZooKeeper
+    name: zookeeper
+    namespace: demo
+  backends:
+    - name: zookeeper-backend
+      storageRef:
+        name: zookeeper-storage
+        namespace: demo
+      retentionPolicy:
+        name: zookeeper-retention-policy
+        namespace: demo
+  sessions:
+    - name: zookeeper-frequent-backup
+      scheduler:
+        failedJobsHistoryLimit: 4
+        jobTemplate:
+          backoffLimit: 2
+          template:
+            spec:
+              containerSecurityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                  - ALL
+                runAsGroup: 0
+                runAsNonRoot: true
+                runAsUser: 999
+                seccompProfile:
+                  type: RuntimeDefault
+              nodeSelector:
+                kubernetes.io/os: linux
+        schedule: 0 */2 * * *
+        successfulJobsHistoryLimit: 2
+      sessionHistoryLimit: 3
+      repositories:
+        - name: zookeeper-repo
+          backend: zookeeper-backend
+          directory: /mongo-repo
+          encryptionSecret:
+            name: zookeeper-encryption-secret
+            namespace: demo
+      addon:
+        name: zookeeper-addon
+        tasks:
+          - name: logical-backup
+        jobTemplate:
+          spec:
+            containerSecurityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              runAsGroup: 0
+              runAsNonRoot: true
+              runAsUser: 999
+              seccompProfile:
+                type: RuntimeDefault
+            nodeSelector:
+              kubernetes.io/os: linux
+---
+apiVersion: core.kubestash.com/v1alpha1
+kind: BackupBlueprint
+metadata:
+  name: zookeeper
+  namespace: demo
+spec:
+  usagePolicy:
+    allowedNamespaces:
+      from: Same
+  backupConfigurationTemplate:
+    backends:
+      - name: zookeeper-backend
+        storageRef:
+          name: zookeeper-storage
+          namespace: demo
+        retentionPolicy:
+          name: zookeeper-retention-policy
+          namespace: demo
+    sessions:
+      - name: zookeeper-frequent-backup
+        scheduler:
+          failedJobsHistoryLimit: 4
+          jobTemplate:
+            backoffLimit: 2
+            template:
+              spec:
+                containerSecurityContext:
+                  allowPrivilegeEscalation: false
+                  capabilities:
+                    drop:
+                    - ALL
+                  runAsGroup: 0
+                  runAsNonRoot: true
+                  runAsUser: 999
+                  seccompProfile:
+                    type: RuntimeDefault
+                nodeSelector:
+                  kubernetes.io/os: linux
+          schedule: 0 */2 * * *
+          successfulJobsHistoryLimit: 2
+        sessionHistoryLimit: 3
+        repositories:
+          - name: zookeeper-repo
+            backend: zookeeper-backend
+            directory: /mongo-repo
+            encryptionSecret:
+              name: zookeeper-encryption-secret
+              namespace: demo
+        addon:
+          name: zookeeper-addon
+          tasks:
+            - name: logical-backup
+          jobTemplate:
+            spec:
+              containerSecurityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                  - ALL
+                runAsGroup: 0
+                runAsNonRoot: true
+                runAsUser: 999
+                seccompProfile:
+                  type: RuntimeDefault
+              nodeSelector:
+                kubernetes.io/os: linux
+---
+apiVersion: core.kubestash.com/v1alpha1
+kind: RestoreSession
+metadata:
+  name: zookeeper
+  namespace: demo
+spec:
+  target:
+    apiGroup: kubedb.com
+    kind: ZooKeeper
+    name: zookeeper
+    namespace: demo
+  dataSource:
+    snapshot: latest
+    repository: zookeeper-repo
+    encryptionSecret:
+      name: zookeeper-encryption-secret
+      namespace: demo
+  addon:
+    name: zookeeper-addon
+    tasks:
+      - name: logical-backup-restore
+    jobTemplate:
+      spec:
+        nodeSelector:
+          kubernetes.io/os: linux
+        securityContext:
+          runAsUser: 999
+          runAsGroup: 0
+    containerRuntimeSettings:
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        runAsGroup: 0
+        runAsNonRoot: true
+        runAsUser: 999
+        seccompProfile:
+          type: RuntimeDefault
+---
 apiVersion: autoscaling.kubedb.com/v1alpha1
 kind: ZooKeeperAutoscaler
 metadata:
