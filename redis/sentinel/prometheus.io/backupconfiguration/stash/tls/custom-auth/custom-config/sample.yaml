@@ -40,7 +40,10 @@ spec:
     name: redis-config
   init:
     waitForInitialRestore: true
-  mode: Sentinel
+  mode: Cluster
+  cluster:
+    replicas: 3
+    shards: 2
   monitor:
     agent: prometheus.io
     prometheus:
@@ -53,9 +56,6 @@ spec:
             cpu: 100m
             memory: 128Mi
   replicas: 3
-  sentinelRef:
-    name: sentinel
-    namespace: demo
   storage:
     accessModes:
     - ReadWriteOnce
