@@ -1,3 +1,57 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: zookeeper-auth
+  namespace: demo
+stringData:
+  password: thisIs1StrongPassword
+  username: root
+type: Opaque
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: zookeeper-config
+  namespace: demo
+stringData:
+  zookeeper.cnf: |
+    [mysqld]
+    max_connections = 200
+    read_buffer_size = 1048576
+type: Opaque
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: zookeeper-ca
+  namespace: demo
+spec:
+  ca:
+    secretName: zookeeper-ca
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/instance: zookeeper
+    app.kubernetes.io/name: zookeepers.kubedb.com
+    release: prometheus-stack
+  name: zookeeper
+  namespace: demo
+spec:
+  endpoints:
+    - honorLabels: true
+      interval: 30s
+      path: /metrics
+      port: metrics
+  namespaceSelector:
+    matchNames:
+      - demo
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: zookeeper
+      app.kubernetes.io/name: zookeepers.kubedb.com
+---
 apiVersion: kubedb.com/v1alpha2
 kind: ZooKeeper
 metadata:
