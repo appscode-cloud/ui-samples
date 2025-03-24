@@ -63,8 +63,6 @@ spec:
     resources:
       requests:
         storage: 500Mi
-  backend:
-    externallyManaged: false
   deletionPolicy: WipeOut
   monitor:
     agent: prometheus.io/builtin
@@ -118,7 +116,7 @@ spec:
     timeout: 10m
     apply: IfReady
   compute:
-    ferretdb:
+    primary:
       trigger: "On"
       podLifeTimeThreshold: 10m
       resourceDiffPercentage: 20
