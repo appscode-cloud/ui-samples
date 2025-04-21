@@ -248,8 +248,12 @@ spec:
             cpu: 100m
             memory: 128Mi
       toggle: true
-    alerts:
+    alert:
       toggle: true
+    authCredential:
+      customize: true
+      referExisting: true
+    customConfiguration: true
     deletionPolicy:
       default: WipeOut
       toggle: true
