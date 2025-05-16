@@ -1,0 +1,303 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cassandra-auth
+  namespace: demo
+stringData:
+  password: thisIs1StrongPassword
+  username: root
+type: Opaque
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cassandra-config
+  namespace: demo
+stringData:
+  cassandra.cnf: |
+    [mysqld]
+    max_connections = 200
+    read_buffer_size = 1048576
+type: Opaque
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: cassandra-ca
+  namespace: demo
+spec:
+  ca:
+    secretName: cassandra-ca
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/instance: cassandra
+    app.kubernetes.io/name: cassandras.kubedb.com
+    release: prometheus-stack
+  name: cassandra
+  namespace: demo
+spec:
+  endpoints:
+    - honorLabels: true
+      interval: 30s
+      path: /metrics
+      port: metrics
+  namespaceSelector:
+    matchNames:
+      - demo
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: cassandra
+      app.kubernetes.io/name: cassandras.kubedb.com
+---
+apiVersion: kubedb.com/v1alpha2
+kind: Cassandra
+metadata:
+  name: cassandra
+  namespace: cassandra
+spec:
+  podTemplate:
+    spec:
+      nodeSelector:
+        app: kubedb
+        instance: cassandra
+        component: cassandra-database
+      tolerations:
+        - effect: NoSchedule
+          key: app
+          operator: Equal
+          value: kubedb
+        - effect: NoSchedule
+          key: instance
+          operator: Equal
+          value: cassandra
+        - effect: NoSchedule
+          key: component
+          operator: Equal
+          value: cassandra-database
+        - effect: NoSchedule
+          key: nodepool_type
+          operator: Equal
+          value: n2-standard-2
+      containers:
+        - name: cassandra
+          resources:
+            requests:
+              cpu: 700m
+              memory: "1200Mi"
+  version: 3.8.3
+  replicas: 1
+  storage:
+    resources:
+      requests:
+        storage: "100Mi"
+#    storageClassName: standard
+    accessModes:
+      - ReadWriteOnce
+  serviceTemplates:
+    - alias: primary
+      spec:
+        type: LoadBalancer
+  deletionPolicy: Halt
+---
+apiVersion: core.kubestash.com/v1alpha1
+kind: BackupConfiguration
+metadata:
+  name: cassandra
+  namespace: demo
+spec:
+  target:
+    apiGroup: kubedb.com
+    kind: Cassandra
+    name: cassandra
+    namespace: demo
+  backends:
+    - name: cassandra-backend
+      storageRef:
+        name: cassandra-storage
+        namespace: demo
+      retentionPolicy:
+        name: cassandra-retention-policy
+        namespace: demo
+  sessions:
+    - name: cassandra-frequent-backup
+      scheduler:
+        failedJobsHistoryLimit: 4
+        jobTemplate:
+          backoffLimit: 2
+          template:
+            spec:
+              containerSecurityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                  - ALL
+                runAsGroup: 0
+                runAsNonRoot: true
+                runAsUser: 999
+                seccompProfile:
+                  type: RuntimeDefault
+              nodeSelector:
+                kubernetes.io/os: linux
+        schedule: 0 */2 * * *
+        successfulJobsHistoryLimit: 2
+      sessionHistoryLimit: 3
+      repositories:
+        - name: cassandra-repo
+          backend: cassandra-backend
+          directory: /mongo-repo
+          encryptionSecret:
+            name: cassandra-encryption-secret
+            namespace: demo
+      addon:
+        name: cassandra-addon
+        tasks:
+          - name: logical-backup
+        jobTemplate:
+          spec:
+            containerSecurityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              runAsGroup: 0
+              runAsNonRoot: true
+              runAsUser: 999
+              seccompProfile:
+                type: RuntimeDefault
+            nodeSelector:
+              kubernetes.io/os: linux
+---
+apiVersion: core.kubestash.com/v1alpha1
+kind: BackupBlueprint
+metadata:
+  name: cassandra
+  namespace: demo
+spec:
+  usagePolicy:
+    allowedNamespaces:
+      from: Same
+  backupConfigurationTemplate:
+    backends:
+      - name: cassandra-backend
+        storageRef:
+          name: cassandra-storage
+          namespace: demo
+        retentionPolicy:
+          name: cassandra-retention-policy
+          namespace: demo
+    sessions:
+      - name: cassandra-frequent-backup
+        scheduler:
+          failedJobsHistoryLimit: 4
+          jobTemplate:
+            backoffLimit: 2
+            template:
+              spec:
+                containerSecurityContext:
+                  allowPrivilegeEscalation: false
+                  capabilities:
+                    drop:
+                    - ALL
+                  runAsGroup: 0
+                  runAsNonRoot: true
+                  runAsUser: 999
+                  seccompProfile:
+                    type: RuntimeDefault
+                nodeSelector:
+                  kubernetes.io/os: linux
+          schedule: 0 */2 * * *
+          successfulJobsHistoryLimit: 2
+        sessionHistoryLimit: 3
+        repositories:
+          - name: cassandra-repo
+            backend: cassandra-backend
+            directory: /mongo-repo
+            encryptionSecret:
+              name: cassandra-encryption-secret
+              namespace: demo
+        addon:
+          name: cassandra-addon
+          tasks:
+            - name: logical-backup
+          jobTemplate:
+            spec:
+              containerSecurityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                  - ALL
+                runAsGroup: 0
+                runAsNonRoot: true
+                runAsUser: 999
+                seccompProfile:
+                  type: RuntimeDefault
+              nodeSelector:
+                kubernetes.io/os: linux
+---
+apiVersion: core.kubestash.com/v1alpha1
+kind: RestoreSession
+metadata:
+  name: cassandra
+  namespace: demo
+spec:
+  target:
+    apiGroup: kubedb.com
+    kind: Cassandra
+    name: cassandra
+    namespace: demo
+  dataSource:
+    snapshot: latest
+    repository: cassandra-repo
+    encryptionSecret:
+      name: cassandra-encryption-secret
+      namespace: demo
+  addon:
+    name: cassandra-addon
+    tasks:
+      - name: logical-backup-restore
+    jobTemplate:
+      spec:
+        nodeSelector:
+          kubernetes.io/os: linux
+        securityContext:
+          runAsUser: 999
+          runAsGroup: 0
+    containerRuntimeSettings:
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        runAsGroup: 0
+        runAsNonRoot: true
+        runAsUser: 999
+        seccompProfile:
+          type: RuntimeDefault
+---
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: CassandraAutoscaler
+metadata:
+  name: cassandra
+  namespace: demo
+spec:
+  databaseRef:
+    name: repl
+  opsRequestOptions:
+    timeout: 10m
+    apply: IfReady
+  compute:
+    cassandra:
+      trigger: "On"
+      podLifeTimeThreshold: 10m
+      resourceDiffPercentage: 20
+      minAllowed:
+        cpu: 400m
+        memory: 400Mi
+      maxAllowed:
+        cpu: 1
+        memory: 2Gi
+    nodeTopology:
+      name: standard-basv2-family
