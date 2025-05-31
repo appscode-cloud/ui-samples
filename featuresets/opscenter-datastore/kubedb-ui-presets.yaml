@@ -44,6 +44,15 @@ spec:
         default: ""
         toggle: true
     databases:
+      Cassandra:
+        versions:
+          available: [ "4.1.8", "5.0.3" ]
+          default: "5.0.3"
+          toggle: true
+        mode:
+          available: [ "Standalone", "Topology" ]
+          default: "Topology"
+          toggle: true
       ClickHouse:
         versions:
           available: [ "24.4.1" ]
@@ -55,8 +64,8 @@ spec:
           toggle: true
       Druid:
         versions:
-          available: [ "28.0.1", "30.0.0" ]
-          default: "30.0.0"
+          available: [ "28.0.1", "30.0.1", "31.0.0" ]
+          default: "31.0.0"
           toggle: true
         mode:
           available: ["Topology"]
@@ -88,6 +97,15 @@ spec:
         mode:
           available: [ "Combined", "Topology" ]
           default: "Topology"
+          toggle: true
+      Ignite:
+        versions:
+          available: [ "2.17.0" ]
+          default: "2.17.0"
+          toggle: true
+        mode:
+          available: [ "Standalone", "Replicaset" ]
+          default: "Replicaset"
           toggle: true
       MariaDB:
         versions:
@@ -190,8 +208,8 @@ spec:
           toggle: true
       Redis:
         versions:
-          available: [ "6.2.14", "7.2.4", "7.4.1" ]
-          default: "7.4.1"
+          available: [ "6.2.14", "7.2.4", "7.4.1", "valkey-8.1.1" ]
+          default: "valkey-8.1.1"
           toggle: true
         mode:
           available: [ "Standalone", "Cluster", "Sentinel" ]
