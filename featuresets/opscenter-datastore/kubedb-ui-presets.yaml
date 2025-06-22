@@ -86,8 +86,8 @@ spec:
           default: "2.0.0"
           toggle: true
         mode:
-          available: [ "Standalone", "Replicaset" ]
-          default: "Replicaset"
+          available: [ "PrimaryOnly", "PrimaryAndSecondary" ]
+          default: "PrimaryAndSecondary"
           toggle: true
       Kafka:
         versions:
@@ -149,7 +149,7 @@ spec:
           default: "8.4.2"
           toggle: true
         mode:
-          available: [ "Standalone", "GroupReplication", "InnoDBCluster" ]
+          available: [ "Standalone", "GroupReplication", "InnoDBCluster", "RemoteReplica", "SemiSync" ]
           default: "GroupReplication"
           toggle: true
       PerconaXtraDB:
@@ -185,8 +185,8 @@ spec:
           default: "17.4"
           toggle: true
         mode:
-          available: [ "Standalone", "Replicaset" ]
-          default: "Replicaset"
+          available: [ "Standalone", "Cluster", "RemoteReplica" ]
+          default: "Cluster"
           toggle: true
       ProxySQL:
         versions:
