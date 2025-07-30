@@ -50,6 +50,36 @@ spec:
         storage: 1Gi
   deletionPolicy: Delete
 ---
+apiVersion: gitops.kubedb.com/v1alpha1
+kind: MSSQLServer
+metadata:
+  name: sqlserver-ag
+  namespace: sample
+spec:
+  version: "2022-cu12"
+  replicas: 3
+  topology:
+    mode: AvailabilityGroup
+    availabilityGroup:
+      databases:
+        - AgDB1
+        - AgDB2
+  internalAuth:
+    endpointCert:
+      issuerRef:
+        apiGroup: cert-manager.io
+        name: sqlserver-ag-ca
+        kind: Issuer
+  storageType: Durable
+  storage:
+    storageClassName: "standard"
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+  deletionPolicy: Delete
+---
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:

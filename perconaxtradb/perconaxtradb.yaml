@@ -124,6 +124,78 @@ spec:
       spec:
         type: LoadBalancer
 ---
+apiVersion: gitops.kubedb.com/v1alpha1
+kind: PerconaXtraDB
+metadata:
+  name: perconaxtradb
+  namespace: sdb
+spec:
+  version: "8.1.32"
+  licenseSecret:
+    name: license-secret
+  storageType: Durable
+  topology:
+    aggregator:
+      podTemplate:
+        spec:
+          nodeSelector:
+            app: kubedb
+            instance: sdb
+            component: sdb-database
+          tolerations:
+            - effect: NoSchedule
+              key: app
+              operator: Equal
+              value: kubedb
+            - effect: NoSchedule
+              key: instance
+              operator: Equal
+              value: sdb
+            - effect: NoSchedule
+              key: component
+              operator: Equal
+              value: sdb-database
+            - effect: NoSchedule
+              key: nodepool_type
+              operator: Equal
+              value: n2-standard-2
+          containers:
+            - name: perconaxtradb
+              resources:
+                requests:
+                  "cpu": 600m
+                  "memory": "1200Mi"
+      replicas: 3
+      storage:
+        storageClassName: "standard-rwo"
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    leaf:
+      podTemplate:
+        spec:
+          containers:
+            - name: perconaxtradb
+              resources:
+                requests:
+                  "cpu": 700m
+                  "memory": "1400Mi"
+      replicas: 2
+      storage:
+        storageClassName: "standard-rwo"
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+  deletionPolicy: Halt
+  serviceTemplates:
+    - alias: primary
+      spec:
+        type: LoadBalancer
+---
 apiVersion: autoscaling.kubedb.com/v1alpha1
 kind: PerconaXtraDBAutoscaler
 metadata:

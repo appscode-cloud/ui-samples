@@ -54,6 +54,52 @@ spec:
   storageType: Ephemeral
   deletionPolicy: WipeOut
 ---
+apiVersion: gitops.kubedb.com/v1alpha1
+kind: Kafka
+metadata:
+  name: kafka
+  namespace: demo
+spec:
+  version: 3.3.2
+  enableSSL: true
+  tls:
+    issuerRef:
+      apiGroup: cert-manager.io
+      name: kafka-ca
+      kind: Issuer
+  authSecret:
+    name: kafka-admin-cred
+  topology:
+    broker:
+      replicas: 3
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: standard
+    controller:
+      replicas: 2
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: standard
+  monitor:
+    agent: prometheus.io/operator
+    prometheus:
+      exporter:
+        port: 9091
+      serviceMonitor:
+        labels:
+          release: prometheus
+        interval: 10s
+  storageType: Ephemeral
+  deletionPolicy: WipeOut
+---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
