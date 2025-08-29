@@ -65,52 +65,9 @@ spec:
         host: clickhouse-keeper.click-keeper
         port: 2181
     cluster:
-    - name: click1
+      name: click1
       shards: 2
       replicas: 3
-      storageType: Durable
-      storage:
-        storageClassName: default
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 10Gi
-      podTemplate:
-        spec:
-          containers:
-            - name: clickhouse
-              resources:
-                limits:
-                  cpu: 500m
-                  memory: 1Gi
-          podPlacementPolicy:
-            name: default
-          nodeSelector:
-            app: clickhouses.kubedb.com
-            instance: hello
-            namespace: default
-            nodepool: standard-bsv2-family
-          tolerations:
-            - key: app
-              operator: "Equal"
-              value: "clickhouses.kubedb.com"
-              effect: "NoSchedule"
-            - key: instance
-              operator: "Equal"
-              value: hello
-              effect: "NoSchedule"
-            - key: namespace
-              operator: "Equal"
-              value: default
-              effect: "NoSchedule"
-            - key: nodepool
-              operator: "Equal"
-              value: standard-bsv2-family
-              effect: "NoSchedule"
-    - name: click2
-      shards: 1
-      replicas: 2
       storageType: Durable
       storage:
         storageClassName: default
