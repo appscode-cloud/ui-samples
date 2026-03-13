@@ -46,8 +46,8 @@ spec:
     databases:
       Cassandra:
         versions:
-          available: [ "4.1.8", "5.0.3" ]
-          default: "5.0.3"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Topology" ]
@@ -55,8 +55,8 @@ spec:
           toggle: true
       ClickHouse:
         versions:
-          available: [ "24.4.1" ]
-          default: "24.4.1"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Topology" ]
@@ -64,8 +64,8 @@ spec:
           toggle: true
       Druid:
         versions:
-          available: [ "28.0.1", "30.0.1", "31.0.0" ]
-          default: "31.0.0"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: ["Topology"]
@@ -73,8 +73,8 @@ spec:
           toggle: true
       Elasticsearch:
         versions:
-          available: [ "xpack-8.17.2", "xpack-7.17.27", "opensearch-1.3.13", "opensearch-2.19.0" ]
-          default: "xpack-8.17.2"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Combined", "Topology" ]
@@ -82,8 +82,8 @@ spec:
           toggle: true
       FerretDB:
         versions:
-          available: [ "1.18.0", "1.23.0", "2.0.0" ]
-          default: "2.0.0"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "PrimaryOnly", "PrimaryAndSecondary" ]
@@ -91,8 +91,8 @@ spec:
           toggle: true
       Hazelcast:
         versions:
-          available: [ "5.5.2", "5.5.6" ]
-          default: "5.5.6"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Combined", "Topology" ]
@@ -100,8 +100,8 @@ spec:
           toggle: true
       Kafka:
         versions:
-          available: [ "3.7.2", "3.9.0", "4.0.0" ]
-          default: "4.0.0"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Combined", "Topology" ]
@@ -109,8 +109,8 @@ spec:
           toggle: true
       Ignite:
         versions:
-          available: [ "2.17.0" ]
-          default: "2.17.0"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Replicaset" ]
@@ -118,8 +118,8 @@ spec:
           toggle: true
       MariaDB:
         versions:
-          available: [ "10.5.23", "10.6.16", "11.5.2" ]
-          default: "11.5.2"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Replicaset" ]
@@ -127,8 +127,8 @@ spec:
           toggle: true
       Memcached:
         versions:
-          available: [ "1.5.22", "1.6.29", "1.6.33" ]
-          default: "1.6.33"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Replicaset" ]
@@ -136,8 +136,8 @@ spec:
           toggle: true
       MongoDB:
         versions:
-          available: ["4.4.26", "5.0.31", "6.0.24", "7.0.21", "8.0.10"]
-          default: "7.0.16"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Replicaset", "Sharded" ]
@@ -145,8 +145,8 @@ spec:
           toggle: true
       MSSQLServer:
         versions:
-          available: [ "2022-cu12", "2022-cu14", "2022-cu16" ]
-          default: "2022-cu16"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Topology" ]
@@ -154,8 +154,8 @@ spec:
           toggle: true
       MySQL:
         versions:
-          available: ["5.7.44", "8.0.36", "8.4.2"]
-          default: "8.4.2"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "GroupReplication", "InnoDBCluster", "RemoteReplica", "SemiSync" ]
@@ -163,8 +163,8 @@ spec:
           toggle: true
       Oracle:
         versions:
-          available: ["21.3.0"]
-          default: "21.3.0"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "DataGuard" ]
@@ -172,8 +172,8 @@ spec:
           toggle: true
       PerconaXtraDB:
         versions:
-          available: [ "8.0.26", "8.0.40", "8.4.3" ]
-          default: "8.4.3"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Replicaset" ]
@@ -181,8 +181,8 @@ spec:
           toggle: true
       PgBouncer:
         versions:
-          available: [ "1.17.0", "1.18.0", "1.23.1", "1.24.0" ]
-          default: "1.24.0"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Replicaset" ]
@@ -190,8 +190,8 @@ spec:
           toggle: true
       Pgpool:
         versions:
-          available: [ "4.4.5", "4.5.0", "4.5.3" ]
-          default: "4.5.3"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Replicaset" ]
@@ -199,8 +199,8 @@ spec:
           toggle: true
       Postgres:
         versions:
-          available: [ "13.20", "14.17", "15.12", "16.8", "17.4" ]
-          default: "17.4"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Cluster", "RemoteReplica" ]
@@ -208,8 +208,8 @@ spec:
           toggle: true
       ProxySQL:
         versions:
-          available: [ "2.3.2-debian", "2.4.4-debian", "2.6.3-debian" ]
-          default: "2.6.3-debian"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Replicaset" ]
@@ -217,8 +217,8 @@ spec:
           toggle: true
       RabbitMQ:
         versions:
-          available: [ "3.12.12", "3.13.2", "4.0.4" ]
-          default: "4.0.4"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Replicaset" ]
@@ -226,8 +226,8 @@ spec:
           toggle: true
       Redis:
         versions:
-          available: [ "6.2.14", "7.2.4", "7.4.1", "valkey-8.1.1" ]
-          default: "valkey-8.1.1"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Cluster", "Sentinel" ]
@@ -235,8 +235,8 @@ spec:
           toggle: true
       Singlestore:
         versions:
-          available: ["8.1.32", "8.5.30", "8.7.10"]
-          default: "8.7.10"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Topology" ]
@@ -244,8 +244,8 @@ spec:
           toggle: true
       Solr:
         versions:
-          available: [ "8.11.2", "9.6.1", "9.8.0" ]
-          default: "9.8.0"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Replicaset", "Topology" ]
@@ -253,8 +253,8 @@ spec:
           toggle: true
       ZooKeeper:
         versions:
-          available: [ "3.7.2", "3.8.3", "3.9.1" ]
-          default: "3.9.1"
+          available: []
+          default: ""
           toggle: true
         mode:
           available: [ "Standalone", "Replicaset" ]
