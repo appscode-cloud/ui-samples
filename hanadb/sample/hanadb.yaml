@@ -1,0 +1,107 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hanadb-auth
+  namespace: demo
+stringData:
+  password: thisIs1StrongPassword
+  username: root
+type: Opaque
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: hanadb-config
+  namespace: demo
+stringData:
+  hanadb.cnf: |
+    [mysqld]
+    max_connections = 200
+    read_buffer_size = 1048576
+type: Opaque
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: hanadb-ca
+  namespace: demo
+spec:
+  ca:
+    secretName: hanadb-ca
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/instance: hanadb
+    app.kubernetes.io/name: hanadbs.kubedb.com
+    release: prometheus-stack
+  name: hanadb
+  namespace: demo
+spec:
+  endpoints:
+  - honorLabels: true
+    interval: 30s
+    path: /metrics
+    port: metrics
+  namespaceSelector:
+    matchNames:
+    - demo
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: hanadb
+      app.kubernetes.io/name: hanadbs.kubedb.com
+---
+apiVersion: kubedb.com/v1alpha2
+kind: HanaDB
+metadata:
+  name: hanadb
+  namespace: default
+spec:
+  version: "24.4.1"
+  replicas: 3
+  storageType: Durable
+  storage:
+    storageClassName: default
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+  podTemplate:
+    spec:
+      containers:
+        - name: hanadb
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+      podPlacementPolicy:
+        name: default
+      nodeSelector:
+        app: hanadbs.kubedb.com
+        instance: hello
+        namespace: default
+        nodepool: standard-bsv2-family
+      tolerations:
+        - key: app
+          operator: "Equal"
+          value: "hanadbs.kubedb.com"
+          effect: "NoSchedule"
+        - key: instance
+          operator: "Equal"
+          value: hello
+          effect: "NoSchedule"
+        - key: namespace
+          operator: "Equal"
+          value: default
+          effect: "NoSchedule"
+        - key: nodepool
+          operator: "Equal"
+          value: standard-bsv2-family
+          effect: "NoSchedule"
+  deletionPolicy: WipeOut
+  serviceTemplates:
+    - alias: primary
+      spec:
+        type: LoadBalancer
