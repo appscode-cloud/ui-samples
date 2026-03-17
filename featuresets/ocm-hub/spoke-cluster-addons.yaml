@@ -12,7 +12,7 @@ spec:
   chart:
     spec:
       chart: spoke-cluster-addons
-      version: "v2024.2.25"
+      version: "v2026.2.16"
       sourceRef:
         kind: HelmRepository
         name: appscode-charts-oci
