@@ -20,15 +20,6 @@ stringData:
     read_buffer_size = 1048576
 type: Opaque
 ---
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: hanadb-ca
-  namespace: demo
-spec:
-  ca:
-    secretName: hanadb-ca
----
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -105,3 +96,28 @@ spec:
     - alias: primary
       spec:
         type: LoadBalancer
+---
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: HanaDBAutoscaler
+metadata:
+  name: hanadb
+  namespace: demo
+spec:
+  databaseRef:
+    name: hanadb
+  opsRequestOptions:
+    timeout: 10m
+    apply: IfReady
+  compute:
+    hanadb:
+      trigger: "On"
+      podLifeTimeThreshold: 10m
+      resourceDiffPercentage: 20
+      minAllowed:
+        cpu: 400m
+        memory: 400Mi
+      maxAllowed:
+        cpu: 1
+        memory: 2Gi
+    nodeTopology:
+      name: standard-basv2-family

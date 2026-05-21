@@ -20,38 +20,6 @@ stringData:
     read_buffer_size = 1048576
 type: Opaque
 ---
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: weaviate-ca
-  namespace: demo
-spec:
-  ca:
-    secretName: weaviate-ca
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    app.kubernetes.io/instance: weaviate
-    app.kubernetes.io/name: weaviates.kubedb.com
-    release: prometheus-stack
-  name: weaviate
-  namespace: demo
-spec:
-  endpoints:
-  - honorLabels: true
-    interval: 30s
-    path: /metrics
-    port: metrics
-  namespaceSelector:
-    matchNames:
-    - demo
-  selector:
-    matchLabels:
-      app.kubernetes.io/instance: weaviate
-      app.kubernetes.io/name: weaviates.kubedb.com
----
 apiVersion: kubedb.com/v1alpha2
 kind: Weaviate
 metadata:
@@ -105,3 +73,28 @@ spec:
     - alias: primary
       spec:
         type: LoadBalancer
+---
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: WeaviateAutoscaler
+metadata:
+  name: weaviate
+  namespace: demo
+spec:
+  databaseRef:
+    name: weaviate
+  opsRequestOptions:
+    timeout: 10m
+    apply: IfReady
+  compute:
+    weaviate:
+      trigger: "On"
+      podLifeTimeThreshold: 10m
+      resourceDiffPercentage: 20
+      minAllowed:
+        cpu: 400m
+        memory: 400Mi
+      maxAllowed:
+        cpu: 1
+        memory: 2Gi
+    nodeTopology:
+      name: standard-basv2-family

@@ -114,6 +114,181 @@ spec:
       spec:
         type: LoadBalancer
 ---
+apiVersion: core.kubestash.com/v1alpha1
+kind: BackupConfiguration
+metadata:
+  name: clickhouse
+  namespace: demo
+spec:
+  target:
+    apiGroup: kubedb.com
+    kind: ClickHouse
+    name: clickhouse
+    namespace: demo
+  backends:
+    - name: clickhouse-backend
+      storageRef:
+        name: clickhouse-storage
+        namespace: demo
+      retentionPolicy:
+        name: clickhouse-retention-policy
+        namespace: demo
+  sessions:
+    - name: clickhouse-frequent-backup
+      scheduler:
+        failedJobsHistoryLimit: 4
+        jobTemplate:
+          backoffLimit: 2
+          template:
+            spec:
+              containerSecurityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                  - ALL
+                runAsGroup: 0
+                runAsNonRoot: true
+                runAsUser: 999
+                seccompProfile:
+                  type: RuntimeDefault
+              nodeSelector:
+                kubernetes.io/os: linux
+        schedule: 0 */2 * * *
+        successfulJobsHistoryLimit: 2
+      sessionHistoryLimit: 3
+      repositories:
+        - name: clickhouse-repo
+          backend: clickhouse-backend
+          directory: /clickhouse-repo
+          encryptionSecret:
+            name: clickhouse-encryption-secret
+            namespace: demo
+      addon:
+        name: clickhouse-addon
+        tasks:
+          - name: logical-backup
+        jobTemplate:
+          spec:
+            containerSecurityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              runAsGroup: 0
+              runAsNonRoot: true
+              runAsUser: 999
+              seccompProfile:
+                type: RuntimeDefault
+            nodeSelector:
+              kubernetes.io/os: linux
+---
+apiVersion: core.kubestash.com/v1alpha1
+kind: BackupBlueprint
+metadata:
+  name: clickhouse
+  namespace: demo
+spec:
+  usagePolicy:
+    allowedNamespaces:
+      from: Same
+  backupConfigurationTemplate:
+    backends:
+      - name: clickhouse-backend
+        storageRef:
+          name: clickhouse-storage
+          namespace: demo
+        retentionPolicy:
+          name: clickhouse-retention-policy
+          namespace: demo
+    sessions:
+      - name: clickhouse-frequent-backup
+        scheduler:
+          failedJobsHistoryLimit: 4
+          jobTemplate:
+            backoffLimit: 2
+            template:
+              spec:
+                containerSecurityContext:
+                  allowPrivilegeEscalation: false
+                  capabilities:
+                    drop:
+                    - ALL
+                  runAsGroup: 0
+                  runAsNonRoot: true
+                  runAsUser: 999
+                  seccompProfile:
+                    type: RuntimeDefault
+                nodeSelector:
+                  kubernetes.io/os: linux
+          schedule: 0 */2 * * *
+          successfulJobsHistoryLimit: 2
+        sessionHistoryLimit: 3
+        repositories:
+          - name: clickhouse-repo
+            backend: clickhouse-backend
+            directory: /clickhouse-repo
+            encryptionSecret:
+              name: clickhouse-encryption-secret
+              namespace: demo
+        addon:
+          name: clickhouse-addon
+          tasks:
+            - name: logical-backup
+          jobTemplate:
+            spec:
+              containerSecurityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                  - ALL
+                runAsGroup: 0
+                runAsNonRoot: true
+                runAsUser: 999
+                seccompProfile:
+                  type: RuntimeDefault
+              nodeSelector:
+                kubernetes.io/os: linux
+---
+apiVersion: core.kubestash.com/v1alpha1
+kind: RestoreSession
+metadata:
+  name: clickhouse
+  namespace: demo
+spec:
+  target:
+    apiGroup: kubedb.com
+    kind: ClickHouse
+    name: clickhouse
+    namespace: demo
+  dataSource:
+    snapshot: latest
+    repository: clickhouse-repo
+    encryptionSecret:
+      name: clickhouse-encryption-secret
+      namespace: demo
+  addon:
+    name: clickhouse-addon
+    tasks:
+      - name: logical-backup-restore
+    jobTemplate:
+      spec:
+        nodeSelector:
+          kubernetes.io/os: linux
+        securityContext:
+          runAsUser: 999
+          runAsGroup: 0
+    containerRuntimeSettings:
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        runAsGroup: 0
+        runAsNonRoot: true
+        runAsUser: 999
+        seccompProfile:
+          type: RuntimeDefault
+---
 apiVersion: autoscaling.kubedb.com/v1alpha1
 kind: ClickHouseAutoscaler
 metadata:
@@ -121,7 +296,7 @@ metadata:
   namespace: demo
 spec:
   databaseRef:
-    name: repl
+    name: clickhouse
   opsRequestOptions:
     timeout: 10m
     apply: IfReady
@@ -138,3 +313,13 @@ spec:
         memory: 2Gi
     nodeTopology:
       name: standard-basv2-family
+---
+apiVersion: catalog.appscode.com/v1alpha1
+kind: ClickHouseBinding
+metadata:
+  name: clickhouse
+  namespace: demo
+spec:
+  sourceRef:
+    name: clickhouse
+    namespace: demo

@@ -378,7 +378,7 @@ metadata:
   namespace: demo
 spec:
   databaseRef:
-    name: repl
+    name: singlestore
   opsRequestOptions:
     timeout: 10m
     apply: IfReady

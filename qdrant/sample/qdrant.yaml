@@ -105,3 +105,28 @@ spec:
     - alias: primary
       spec:
         type: LoadBalancer
+---
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: QdrantAutoscaler
+metadata:
+  name: qdrant
+  namespace: demo
+spec:
+  databaseRef:
+    name: qdrant
+  opsRequestOptions:
+    timeout: 10m
+    apply: IfReady
+  compute:
+    qdrant:
+      trigger: "On"
+      podLifeTimeThreshold: 10m
+      resourceDiffPercentage: 20
+      minAllowed:
+        cpu: 400m
+        memory: 400Mi
+      maxAllowed:
+        cpu: 1
+        memory: 2Gi
+    nodeTopology:
+      name: standard-basv2-family

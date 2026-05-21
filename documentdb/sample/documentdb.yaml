@@ -1,61 +1,17 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: milvus-auth
+  name: documentdb-auth
   namespace: demo
 stringData:
   password: thisIs1StrongPassword
   username: root
 type: Opaque
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: milvus-config
-  namespace: demo
-stringData:
-  milvus.cnf: |
-    [mysqld]
-    max_connections = 200
-    read_buffer_size = 1048576
-type: Opaque
----
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: milvus-ca
-  namespace: demo
-spec:
-  ca:
-    secretName: milvus-ca
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    app.kubernetes.io/instance: milvus
-    app.kubernetes.io/name: milvuss.kubedb.com
-    release: prometheus-stack
-  name: milvus
-  namespace: demo
-spec:
-  endpoints:
-  - honorLabels: true
-    interval: 30s
-    path: /metrics
-    port: metrics
-  namespaceSelector:
-    matchNames:
-    - demo
-  selector:
-    matchLabels:
-      app.kubernetes.io/instance: milvus
-      app.kubernetes.io/name: milvuss.kubedb.com
----
 apiVersion: kubedb.com/v1alpha2
-kind: Milvus
+kind: DocumentDB
 metadata:
-  name: milvus
+  name: documentdb
   namespace: default
 spec:
   version: "24.4.1"
@@ -71,7 +27,7 @@ spec:
   podTemplate:
     spec:
       containers:
-        - name: milvus
+        - name: documentdb
           resources:
             limits:
               cpu: 500m
@@ -79,14 +35,14 @@ spec:
       podPlacementPolicy:
         name: default
       nodeSelector:
-        app: milvuss.kubedb.com
+        app: documentdbs.kubedb.com
         instance: hello
         namespace: default
         nodepool: standard-bsv2-family
       tolerations:
         - key: app
           operator: "Equal"
-          value: "milvuss.kubedb.com"
+          value: "documentdbs.kubedb.com"
           effect: "NoSchedule"
         - key: instance
           operator: "Equal"
@@ -107,18 +63,18 @@ spec:
         type: LoadBalancer
 ---
 apiVersion: autoscaling.kubedb.com/v1alpha1
-kind: MilvusAutoscaler
+kind: DocumentDBAutoscaler
 metadata:
-  name: milvus
+  name: documentdb
   namespace: demo
 spec:
   databaseRef:
-    name: milvus
+    name: documentdb
   opsRequestOptions:
     timeout: 10m
     apply: IfReady
   compute:
-    milvus:
+    documentdb:
       trigger: "On"
       podLifeTimeThreshold: 10m
       resourceDiffPercentage: 20

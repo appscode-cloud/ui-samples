@@ -203,7 +203,7 @@ metadata:
   namespace: demo
 spec:
   databaseRef:
-    name: repl
+    name: rabbitmq
   opsRequestOptions:
     timeout: 10m
     apply: IfReady
