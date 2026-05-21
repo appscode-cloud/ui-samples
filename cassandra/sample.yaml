@@ -147,7 +147,7 @@ spec:
       repositories:
         - name: cassandra-repo
           backend: cassandra-backend
-          directory: /mongo-repo
+          directory: /cassandra-repo
           encryptionSecret:
             name: cassandra-encryption-secret
             namespace: demo
@@ -214,7 +214,7 @@ spec:
         repositories:
           - name: cassandra-repo
             backend: cassandra-backend
-            directory: /mongo-repo
+            directory: /cassandra-repo
             encryptionSecret:
               name: cassandra-encryption-secret
               namespace: demo
@@ -284,7 +284,7 @@ metadata:
   namespace: demo
 spec:
   databaseRef:
-    name: repl
+    name: cassandra
   opsRequestOptions:
     timeout: 10m
     apply: IfReady
@@ -301,3 +301,13 @@ spec:
         memory: 2Gi
     nodeTopology:
       name: standard-basv2-family
+---
+apiVersion: catalog.appscode.com/v1alpha1
+kind: CassandraBinding
+metadata:
+  name: cassandra
+  namespace: demo
+spec:
+  sourceRef:
+    name: cassandra
+    namespace: demo

@@ -317,7 +317,7 @@ metadata:
   namespace: demo
 spec:
   databaseRef:
-    name: repl
+    name: solr
   opsRequestOptions:
     timeout: 10m
     apply: IfReady

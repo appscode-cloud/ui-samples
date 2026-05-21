@@ -147,7 +147,7 @@ spec:
       repositories:
         - name: zookeeper-repo
           backend: zookeeper-backend
-          directory: /mongo-repo
+          directory: /zookeeper-repo
           encryptionSecret:
             name: zookeeper-encryption-secret
             namespace: demo
@@ -284,7 +284,7 @@ metadata:
   namespace: demo
 spec:
   databaseRef:
-    name: repl
+    name: zookeeper
   opsRequestOptions:
     timeout: 10m
     apply: IfReady
@@ -301,13 +301,3 @@ spec:
         memory: 2Gi
     nodeTopology:
       name: standard-basv2-family
----
-apiVersion: catalog.appscode.com/v1alpha1
-kind: ZooKeeperBinding
-metadata:
-  name: zookeeper
-  namespace: demo
-spec:
-  sourceRef:
-    name: zookeeper
-    namespace: demo

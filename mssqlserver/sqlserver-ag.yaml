@@ -294,7 +294,7 @@ metadata:
   namespace: demo
 spec:
   databaseRef:
-    name: repl
+    name: sqlserver-ag
   opsRequestOptions:
     timeout: 10m
     apply: IfReady
