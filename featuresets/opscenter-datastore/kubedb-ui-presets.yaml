@@ -80,15 +80,6 @@ spec:
           available: [ "Combined", "Topology" ]
           default: "Topology"
           toggle: true
-      FerretDB:
-        versions:
-          available: []
-          default: ""
-          toggle: true
-        mode:
-          available: [ "PrimaryOnly", "PrimaryAndSecondary" ]
-          default: "PrimaryAndSecondary"
-          toggle: true
       Hazelcast:
         versions:
           available: []
