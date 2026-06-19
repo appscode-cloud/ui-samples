@@ -168,3 +168,13 @@ spec:
         memory: 2Gi
     nodeTopology:
       name: standard-basv2-family
+---
+apiVersion: catalog.appscode.com/v1alpha1
+kind: PgpoolBinding
+metadata:
+  name: pgpool
+  namespace: demo
+spec:
+  sourceRef:
+    name: pgpool
+    namespace: demo
