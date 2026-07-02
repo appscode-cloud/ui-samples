@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: aerospike-auth
+  namespace: demo
+stringData:
+  password: thisIs1StrongPassword
+  username: root
+type: Opaque
+---
+apiVersion: kubedb.com/v1alpha2
+kind: Aerospike
+metadata:
+  name: aerospike
+  namespace: demo
+spec:
+  version: "8.1.2.2"
+  mode: Cluster
+  cluster:
+    replicas: 3
+    replicationFactor: 2
+  authSecret:
+    name: aerospike-auth
+  deletionPolicy: WipeOut
+---
+apiVersion: autoscaling.kubedb.com/v1alpha1
+kind: AerospikeAutoscaler
+metadata:
+  name: aerospike
+  namespace: demo
+spec:
+  databaseRef:
+    name: aerospike
+  opsRequestOptions:
+    timeout: 10m
+    apply: IfReady
+  compute:
+    aerospike:
+      trigger: "On"
+      podLifeTimeThreshold: 10m
+      resourceDiffPercentage: 20
+      minAllowed:
+        cpu: 400m
+        memory: 400Mi
+      maxAllowed:
+        cpu: 1
+        memory: 2Gi
+    nodeTopology:
+      name: standard-basv2-family
