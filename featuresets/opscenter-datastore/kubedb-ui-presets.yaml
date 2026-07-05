@@ -44,6 +44,15 @@ spec:
         default: ""
         toggle: true
     databases:
+      Aerospike:
+        versions:
+          available: []
+          default: ""
+          toggle: true
+        mode:
+          available: [ "Standalone", "Replicaset" ]
+          default: "Standalone"
+          toggle: true
       Cassandra:
         versions:
           available: []
@@ -62,6 +71,24 @@ spec:
           available: [ "Standalone", "Topology" ]
           default: "Topology"
           toggle: true
+      DB2:
+        versions:
+          available: []
+          default: ""
+          toggle: true
+        mode:
+          available: [ "Standalone", "Replicaset" ]
+          default: "Standalone"
+          toggle: true
+      DocumentDB:
+        versions:
+          available: []
+          default: ""
+          toggle: true
+        mode:
+          available: [ "Standalone", "Replicaset" ]
+          default: "Replicaset"
+          toggle: true
       Druid:
         versions:
           available: []
@@ -79,6 +106,15 @@ spec:
         mode:
           available: [ "Combined", "Topology" ]
           default: "Topology"
+          toggle: true
+      HanaDB:
+        versions:
+          available: []
+          default: ""
+          toggle: true
+        mode:
+          available: [ "Standalone", "SystemReplication" ]
+          default: "SystemReplication"
           toggle: true
       Hazelcast:
         versions:
@@ -124,6 +160,15 @@ spec:
         mode:
           available: [ "Standalone", "Replicaset" ]
           default: "Replicaset"
+          toggle: true
+      Milvus:
+        versions:
+          available: []
+          default: ""
+          toggle: true
+        mode:
+          available: [ "Standalone", "Distributed" ]
+          default: "Distributed"
           toggle: true
       MongoDB:
         versions:
@@ -206,6 +251,15 @@ spec:
           available: [ "Standalone", "Replicaset" ]
           default: "Replicaset"
           toggle: true
+      Qdrant:
+        versions:
+          available: []
+          default: ""
+          toggle: true
+        mode:
+          available: [ "Standalone", "Distributed" ]
+          default: "Distributed"
+          toggle: true
       RabbitMQ:
         versions:
           available: []
@@ -240,6 +294,15 @@ spec:
           toggle: true
         mode:
           available: [ "Standalone", "Replicaset", "Topology" ]
+          default: "Replicaset"
+          toggle: true
+      Weaviate:
+        versions:
+          available: []
+          default: ""
+          toggle: true
+        mode:
+          available: [ "Standalone", "Replicaset" ]
           default: "Replicaset"
           toggle: true
       ZooKeeper:
