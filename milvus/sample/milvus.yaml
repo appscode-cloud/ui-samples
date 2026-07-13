@@ -130,3 +130,13 @@ spec:
         memory: 2Gi
     nodeTopology:
       name: standard-basv2-family
+---
+apiVersion: catalog.appscode.com/v1alpha1
+kind: MilvusBinding
+metadata:
+  name: milvus
+  namespace: demo
+spec:
+  sourceRef:
+    name: milvus
+    namespace: demo

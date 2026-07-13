@@ -130,3 +130,13 @@ spec:
         memory: 2Gi
     nodeTopology:
       name: standard-basv2-family
+---
+apiVersion: catalog.appscode.com/v1alpha1
+kind: QdrantBinding
+metadata:
+  name: qdrant
+  namespace: demo
+spec:
+  sourceRef:
+    name: qdrant
+    namespace: demo

@@ -98,3 +98,13 @@ spec:
         memory: 2Gi
     nodeTopology:
       name: standard-basv2-family
+---
+apiVersion: catalog.appscode.com/v1alpha1
+kind: WeaviateBinding
+metadata:
+  name: weaviate
+  namespace: demo
+spec:
+  sourceRef:
+    name: weaviate
+    namespace: demo
