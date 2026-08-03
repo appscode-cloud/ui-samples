@@ -20,6 +20,38 @@ stringData:
     read_buffer_size = 1048576
 type: Opaque
 ---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: weaviate-ca
+  namespace: demo
+spec:
+  ca:
+    secretName: weaviate-ca
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/instance: weaviate
+    app.kubernetes.io/name: weaviates.kubedb.com
+    release: prometheus-stack
+  name: weaviate
+  namespace: demo
+spec:
+  endpoints:
+  - honorLabels: true
+    interval: 30s
+    path: /metrics
+    port: metrics
+  namespaceSelector:
+    matchNames:
+    - demo
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: weaviate
+      app.kubernetes.io/name: weaviates.kubedb.com
+---
 apiVersion: kubedb.com/v1alpha2
 kind: Weaviate
 metadata:
