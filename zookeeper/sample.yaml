@@ -214,7 +214,7 @@ spec:
         repositories:
           - name: zookeeper-repo
             backend: zookeeper-backend
-            directory: /mongo-repo
+            directory: /zookeeper-repo
             encryptionSecret:
               name: zookeeper-encryption-secret
               namespace: demo
