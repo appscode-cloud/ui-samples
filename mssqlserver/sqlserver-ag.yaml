@@ -20,6 +20,15 @@ stringData:
     read_buffer_size = 1048576
 type: Opaque
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sqlserver-ag-product-key
+  namespace: demo
+stringData:
+  product-key: XXXXX-XXXXX-XXXXX-XXXXX-XXXXX
+type: Opaque
+---
 apiVersion: kubedb.com/v1alpha2
 kind: MSSQLServer
 metadata:
